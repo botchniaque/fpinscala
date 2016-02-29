@@ -8,5 +8,5 @@ RNG.nonNegativeInt(nr)
 RNG.double(nr)
 RNG.ints(4)(nr)
 RNG._double(nr)
-
 RNG.intsSeq(5)(nr)
+RNG.nonNegativeLessThan(436)(nr)
