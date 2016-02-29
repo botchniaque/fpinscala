@@ -1,5 +1,7 @@
 package fpinscala.gettingstarted
 
+import sun.font.TrueTypeFont
+
 // A comment!
 /* Another comment */
 /** A documentation comment */
@@ -36,7 +38,14 @@ object MyModule {
 
   // Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+  def fib(n: Int): Int = {
+    @annotation.tailrec
+    def fib(c: Int, sum: Int, previous: Int): Int = {
+      if (c == n) sum
+      else fib(c+1, sum + previous, sum)
+    }
+    fib(0, 0, 1)
+  }
 
   // This definition and `formatAbs` are very similar..
   private def formatFactorial(n: Int) = {
@@ -140,7 +149,14 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+    def go(indes: Int, v:A): Boolean = {
+      if (indes > as.length) true
+      else if (gt(as(indes), v)) go(indes + 1, as(indes))
+      else false
+    }
+    go(1, as(0))
+  }
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
