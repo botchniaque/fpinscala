@@ -1,4 +1,4 @@
-import fpinscala.state.RNG
+import fpinscala.state._
 
 var r:RNG = RNG.Simple(5)
 
@@ -10,3 +10,5 @@ RNG.ints(4)(nr)
 RNG._double(nr)
 RNG.intsSeq(5)(nr)
 RNG.nonNegativeLessThan(436)(nr)
+val inputs = List(Coin, Turn)
+State.simulateMachine(inputs).run(new Machine(true, 5, 10))

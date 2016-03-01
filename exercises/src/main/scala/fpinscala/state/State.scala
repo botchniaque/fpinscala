@@ -123,26 +123,46 @@ object RNG {
     })
   }
 
-  def map[A,B](s: Rand[A])(f: A => B): Rand[B] =
+  def mapFM[A,B](s: Rand[A])(f: A => B): Rand[B] =
     flatMap(s)(a => unit(f(a)))
 
-  def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+  def map2FM[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
     flatMap(ra)(a => map(rb)(b => f(a, b)))
   }
 }
 
 case class State[S,+A](run: S => (A, S)) {
-  def map[B](f: A => B): State[S, B] =
-    sys.error("todo")
+
+  def map[B](f: A => B): State[S, B] = {
+    new State({
+      s: S => {
+        val (a, s1) = run(s)
+        (f(a), s1)
+      }
+    })
+  }
+
   def map2[B,C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
-    sys.error("todo")
-  def flatMap[B](f: A => State[S, B]): State[S, B] =
-    sys.error("todo")
+    new State(s => {
+      val (a, s1) = run(s)
+      val (b, s2) = sb.run(s1)
+      (f(a, b), s2)
+    })
+
+  def flatMap[B](f: A => State[S, B]): State[S, B] = {
+    new State(s => {
+      val (a, s1) = run(s)
+      f(a).run(s1)
+    })
+  }
+
+
 }
 
 sealed trait Input
 case object Coin extends Input
 case object Turn extends Input
+
 
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
